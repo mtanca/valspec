@@ -1,5 +1,5 @@
 defmodule MyApp.Users.CallbackSchema do
-  use Valspec
+  use Valspec.Schema
 
   valspec_schema do
     embeds_one(:user, MyApp.Users.UserSchema)

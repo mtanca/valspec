@@ -1,6 +1,6 @@
 # Valspec
 
-**A simple elixir library for Phoenix that combines Swagger documentation and parameter validation**
+**An elixir library for Phoenix that generates Swagger documentation and performs parameter validation.**
 
 ## Installation
 
@@ -28,7 +28,8 @@ Visit the [Serve Spec](https://github.com/open-api-spex/open_api_spex?tab=readme
 ### Add Valspec to your controller
 ```elixir
   defmodule MyAppWeb.ExampleUsersController do
-    use Valspec
+    use MyAppWeb, :controller
+    use Valspec.Controller
 
     valspec_create :create_user, summary: "Creates a User" do
       required(:first_name, :string, example: "Greg")
@@ -38,20 +39,26 @@ Visit the [Serve Spec](https://github.com/open-api-spex/open_api_spex?tab=readme
     end
 
     def create(conn, params) do
+      # `valspec_validate/2` - validates a map of parameters. Returns:
+      #    - {:ok, map()} when params are valid
+      #    - {:error, Ecto.%Changeset{}} when params are invalid
       with {:ok, user_params} <- valspec_validate(:create_user, params) do
         ...
+      else
+        {:error, %Ecto.Changeset{} = _changeset} ->
+          ...
       end
     end
   end
 ```
 
 ### Creating a schema
-Using `valspex_schema/0` allows you to define response or callback schemas for your documentation. `valspex_schema/0` uses Ecto `embedded_schema` under the hood and uses its
+Using `valspex_schema/1` allows you to define response or callback schemas for your documentation. `valspex_schema/1` uses Ecto `embedded_schema` under the hood and uses its
 syntax:
 
 ```elixir
   defmodule MyAppWeb.Users.Schema do
-    use Valspec
+    use Valspec.Schema
 
     valspec_schema do
       field :id, :uuid, example: "82b557d1-0000-0000-0000-55df16add1b5"
@@ -62,9 +69,10 @@ syntax:
     end
   end
 
-  # You can use a valspec schema within other valspec schemas via `embeds_one/2` or `embeds_many/2`
+  # You can use a valspec schema within other valspec schemas via `embeds_one/2` 
+  # or `embeds_many/2`
   defmodule MyApp.Users.SucessResponse do
-    use Valspec
+    use Valspec.Schema
 
     valspec_schema do
       embeds_one :data, MyAppWeb.Users.Schema
@@ -76,7 +84,8 @@ You can use the schema by using the `default_response_schema` opt on init or by 
 
 ```elixir
   defmodule MyAppWeb.ExampleUsersController do
-    use Valspec,
+    use MyAppWeb, :controller
+    use Valspec.Controller,
     # Applies to all actions unless overridden
     default_response_schema: MyApp.Users.SucessResponse
     
@@ -127,7 +136,11 @@ end
   * `valspec_show/1` - define specs for a controller's #show/2 action
   * `valspec_custom/2` - define specs for a custom controller action.
   * `valspec_custom/4` - define specs for a custom controller action.
-  * `valspec_schema/1`- defines a struct that can used in defining responses.
+  * `valspec_schema/1`- defines a struct that can used in defining responses and callbacks.
+  * `valspec_validate/2` - validates a map of parameters.
+    Returns:
+      - `{:ok, map()}` when params are valid
+      - `{:error, Ecto.%Changeset{}}` when params are invalid
 
   ## Examples
   There is an example phoenix project in this repo under `/examples/my_app`. You can run the app and navigate to the `/swaggerui#` to see the example

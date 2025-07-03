@@ -1,5 +1,5 @@
 defmodule MyApp.Users.UserSchema do
-  use Valspec
+  use Valspec.Schema
 
   valspec_schema do
     field(:first_name, :string)

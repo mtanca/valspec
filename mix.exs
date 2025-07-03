@@ -1,7 +1,7 @@
 defmodule Valspec.MixProject do
   use Mix.Project
 
-  @version "0.1.0"
+  @version "0.2.0"
   @source_url "https://github.com/mtanca/valspec"
 
   def project do
@@ -12,9 +12,10 @@ defmodule Valspec.MixProject do
       start_permanent: Mix.env() == :prod,
       deps: deps(),
       description:
-        "A simple elixir library for Phoenix that combines Swagger documentation and parameter validation.",
+        "An elixir library for Phoenix that generates Swagger documentation and performs parameter validation.",
       source_url: @source_url,
-      package: package()
+      package: package(),
+      docs: &docs/0
     ]
   end
 
@@ -29,7 +30,8 @@ defmodule Valspec.MixProject do
   defp deps do
     [
       {:m_goal, "~> 1.2.2"},
-      {:open_api_spex, "~> 3.21"}
+      {:open_api_spex, "~> 3.21"},
+      {:ex_doc, "~> 0.34", only: :dev, runtime: false}
     ]
   end
 
@@ -38,6 +40,12 @@ defmodule Valspec.MixProject do
       maintainers: ["Mark T"],
       licenses: ["MIT"],
       links: %{"GitHub" => @source_url}
+    ]
+  end
+
+  defp docs do
+    [
+      extras: ["README.md"]
     ]
   end
 end

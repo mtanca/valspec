@@ -1,7 +1,7 @@
 defmodule MyAppWeb.UsersController do
   use MyAppWeb, :controller
 
-  use Valspec,
+  use Valspec.Controller,
     tags: ["Users"],
     default_callback_schema: MyApp.Users.CallbackSchema,
     default_response_schema: MyApp.Users.JSONResponse
@@ -14,14 +14,20 @@ defmodule MyAppWeb.UsersController do
 
   def create(conn, params) do
     with {:ok, _} <- valspec_validate(:create_user, params) do
-      put_status(conn, 200)
+      conn
+      |> put_status(200)
+      |> json(%{})
     else
-      _ ->
-        put_status(conn, 400)
+      {:error, %Ecto.Changeset{} = changeset} ->
+        errors = validation_errors(changeset)
+
+        conn
+        |> put_status(400)
+        |> json(%{errors: errors})
     end
   end
 
-  valspec_update :updates_user, summary: "Updates a user" do
+  valspec_update :update_user, summary: "Updates a user" do
     required(:first_name, :string, nullable: false)
     required(:age, :integer, minimum: 20)
     optional(:last_name, :string)
@@ -29,10 +35,16 @@ defmodule MyAppWeb.UsersController do
 
   def update(conn, params) do
     with {:ok, _} <- valspec_validate(:update_user, params) do
-      put_status(conn, 200)
+      conn
+      |> put_status(200)
+      |> json(%{})
     else
-      _ ->
-        put_status(conn, 400)
+      {:error, %Ecto.Changeset{} = changeset} ->
+        errors = validation_errors(changeset)
+
+        conn
+        |> put_status(400)
+        |> json(%{errors: errors})
     end
   end
 
@@ -55,5 +67,13 @@ defmodule MyAppWeb.UsersController do
 
   def delete(conn, _) do
     conn
+  end
+
+  def validation_errors(changeset) do
+    Ecto.Changeset.traverse_errors(changeset, fn {msg, opts} ->
+      Regex.replace(~r"%{(\w+)}", msg, fn _, key ->
+        opts |> Keyword.get(String.to_existing_atom(key), key) |> to_string()
+      end)
+    end)
   end
 end
