@@ -1,5 +1,5 @@
 defmodule MyApp.Users.JSONResponse do
-  use Valspec
+  use Valspec.Schema
 
   valspec_schema do
     embeds_one(:data, MyApp.Users.UserSchema)
