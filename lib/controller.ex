@@ -155,10 +155,12 @@ defmodule Valspec.Controller do
       require OpenApiSpex
 
       summary = Keyword.get(unquote(opts), :summary, "")
+      open_api_opts = Keyword.get(unquote(opts), :open_api_opts, [])
 
       swagger_opts =
         [summary: summary, type: :object]
         |> maybe_add_response_schema(unquote(opts), @default_response_schema)
+        |> maybe_add_open_api_opts(open_api_opts)
 
       operation(:index, swagger_opts)
     end
@@ -183,10 +185,12 @@ defmodule Valspec.Controller do
       require OpenApiSpex
 
       summary = Keyword.get(unquote(opts), :summary, "")
+      open_api_opts = Keyword.get(unquote(opts), :open_api_opts, [])
 
       swagger_opts =
         [summary: summary, type: :object]
         |> maybe_add_response_schema(unquote(opts), @default_response_schema)
+        |> maybe_add_open_api_opts(open_api_opts)
 
       operation(:show, swagger_opts)
     end
@@ -256,11 +260,13 @@ defmodule Valspec.Controller do
       require OpenApiSpex
 
       summary = Keyword.get(unquote(opts), :summary, "")
+      open_api_opts = Keyword.get(unquote(opts), :open_api_opts, [])
 
       swagger_opts =
         [summary: summary, type: :object]
         |> maybe_add_response_schema(unquote(opts), @default_response_schema)
         |> maybe_add_callback_schemas(unquote(opts), @default_callback_schema)
+        |> maybe_add_open_api_opts(open_api_opts)
 
       operation(unquote(action), swagger_opts)
     end
@@ -281,6 +287,7 @@ defmodule Valspec.Controller do
       unquote(new_module)
 
       summary = Keyword.get(unquote(opts), :summary, "")
+      open_api_opts = Keyword.get(unquote(opts), :open_api_opts, [])
 
       request_body =
         {"", "application/json", apply(unquote(Macro.escape(new_module_name)), :schema, [])}
@@ -289,6 +296,7 @@ defmodule Valspec.Controller do
         [summary: summary, type: :object, request_body: request_body]
         |> maybe_add_response_schema(unquote(opts), @default_response_schema)
         |> maybe_add_callback_schemas(unquote(opts), @default_callback_schema)
+        |> maybe_add_open_api_opts(open_api_opts)
 
       operation(unquote(action), swagger_opts)
     end

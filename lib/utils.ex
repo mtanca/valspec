@@ -416,4 +416,12 @@ defmodule Valspec.Utils do
       base_opts
     end
   end
+
+  def maybe_add_open_api_opts(base_opts, []), do: base_opts
+
+  def maybe_add_open_api_opts(base_opts, opts) do
+    Enum.reduce(opts, base_opts, fn opt, acc ->
+      Keyword.merge(acc, List.wrap(opt))
+    end)
+  end
 end

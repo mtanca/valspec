@@ -27,7 +27,11 @@ defmodule MyAppWeb.UsersController do
     end
   end
 
-  valspec_update :update_user, summary: "Updates a user" do
+  valspec_update :update_user, summary: "Updates a user", open_api_opts: [
+    parameters: [
+      id: [in: :path, description: "User ID", type: :integer, example: 1001]
+    ]
+  ] do
     required(:first_name, :string, nullable: false)
     required(:age, :integer, minimum: 20)
     optional(:last_name, :string)
