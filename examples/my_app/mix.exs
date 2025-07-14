@@ -33,7 +33,7 @@ defmodule MyApp.MixProject do
   defp deps do
     [
       {:open_api_spex, "~> 3.21"},
-      {:valspec, "~> 0.2.0", path: "../../"},
+      {:valspec, "~> 0.2.1", path: "../../"},
       # -------
       {:phoenix, "~> 1.7.14"},
       {:phoenix_html, "~> 4.1"},
