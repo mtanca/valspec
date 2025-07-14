@@ -10,7 +10,7 @@ The latest version of Valspec is built on top [open_api_spex](https://github.com
 def deps do
   [
     {:open_api_spex, "~> 3.21"},
-    {:valspec, "~> 0.2.0"}
+    {:valspec, "~> 0.2.1"}
   ]
 end
 ```
