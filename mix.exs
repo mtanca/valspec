@@ -29,7 +29,7 @@ defmodule Valspec.MixProject do
   # Run "mix help deps" to learn about dependencies.
   defp deps do
     [
-      {:m_goal, "~> 1.2.2"},
+      {:m_goal, "~> 1.2.3"},
       {:open_api_spex, "~> 3.21"},
       {:ex_doc, "~> 0.34", only: :dev, runtime: false}
     ]
